@@ -36,22 +36,22 @@ public class UserService {
 	private RatingMapper ratingMapper;
 
 	public UserResponse saveUser(RegistrationRequest registrationRequest,UserRole role) {
-	User user = null;
-	switch (role) {
-	case ADMIN -> user = new Admin();
-	case HR -> user = new HR();
-	case STUDENT -> user = new Student();
-	case TRAINER -> user = new Trainer();
-	default -> throw new IllegalArgumentException("Unexpected value: " + role);
-	}
-	
-	if(user != null) {
-		user = mapper.mapToUserEntity(registrationRequest, user);
-		user.setRole(role);
-		user = userRepository.save(user);
-	}
-	
-	return mapper.mapToUserResponse(user);
+		User user = null;
+		switch (role) {
+		case ADMIN -> user = new Admin();
+		case HR -> user = new HR();
+		case STUDENT -> user = new Student();
+		case TRAINER -> user = new Trainer();
+		default -> throw new IllegalArgumentException("Unexpected value: " + role);
+		}
+
+		if(user != null) {
+			user = mapper.mapToUserEntity(registrationRequest, user);
+			user.setRole(role);
+			user = userRepository.save(user);
+		}
+
+		return mapper.mapToUserResponse(user);
 	}
 	
 	public UserResponse updateTrainer(TrainerRequest trainerRequest,String userId) {		
@@ -71,8 +71,7 @@ public class UserService {
 	}
 
 	public StudentResponse updateStudent(Stack stack, String userId) {
-		
-			return	userRepository.findById(userId).map(user->{
+		return	userRepository.findById(userId).map(user->{
 			Student student=(Student)user;
 			stack.getSubjects().forEach(subject->{
 				Rating rating = new Rating();
