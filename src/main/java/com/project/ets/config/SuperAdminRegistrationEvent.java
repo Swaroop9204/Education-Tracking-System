@@ -13,7 +13,6 @@ import com.project.ets.entity.User;
 import com.project.ets.enums.UserRole;
 import com.project.ets.repository.UserRepository;
 
-import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @Component
