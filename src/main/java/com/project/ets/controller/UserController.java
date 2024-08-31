@@ -34,19 +34,19 @@ public class UserController {
 	private UserService userService;
 	private AppResponseBuilder responseBuilder;
 	
-	@PostMapping("/admins")
+	@PostMapping("/admins/register")
 	public ResponseEntity<ResponseStructure<UserResponse>> saveAdmin(@RequestBody @Valid RegistrationRequest registrationRequest) {
 		UserResponse adminResponse=userService.saveUser(registrationRequest,UserRole.ADMIN);
 		return responseBuilder.success(HttpStatus.CREATED,"Admin created Successfully", adminResponse);
 	}
 	
-	@PostMapping("/hrs")
+	@PostMapping("/hrs/register")
 	public ResponseEntity<ResponseStructure<UserResponse>>saveHr(@RequestBody @Valid RegistrationRequest registrationRequest){
 		UserResponse hrResponse=userService.saveUser(registrationRequest,UserRole.HR);
 		return responseBuilder.success(HttpStatus.CREATED, "Hr created Successfully", hrResponse);
 	}
 	
-	@PostMapping("/trainers")
+	@PostMapping("/trainers/register")
 	public ResponseEntity<ResponseStructure<UserResponse>> saveTrainer(@RequestBody @Valid RegistrationRequest registrationRequest){
 		UserResponse response=userService.saveUser(registrationRequest,UserRole.TRAINER);
 		return responseBuilder.success(HttpStatus.CREATED, "Trainer created successfully", response);
@@ -58,7 +58,7 @@ public class UserController {
 		return responseBuilder.success(HttpStatus.OK, "Trainer updated", response);
 	}
 	
-	@PostMapping("/students")
+	@PostMapping("/students/register")
 	public ResponseEntity<ResponseStructure<UserResponse>> saveStudent(@RequestBody @Valid RegistrationRequest registrationRequest){
 		UserResponse response=userService.saveUser(registrationRequest,UserRole.STUDENT);
 		return responseBuilder.success(HttpStatus.CREATED, "Student created successfully", response);
@@ -76,7 +76,7 @@ public class UserController {
 		return responseBuilder.success(HttpStatus.OK, "Student stack is Updated", response);
 	}
 	
-	@GetMapping("/students/{studentId}")
+	@GetMapping("/students/{studentId}/ratings")
 	public ResponseEntity<ResponseStructure<List<RatingResponse>>> viewRating(@PathVariable String studentId){
 		List<RatingResponse> responses=userService.viewRating(studentId);
 		return responseBuilder.success(HttpStatus.FOUND, "found the ratings of the student", responses);
