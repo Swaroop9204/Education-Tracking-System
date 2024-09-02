@@ -1,0 +1,19 @@
+spring:
+  # DataBase Configuration
+  application:
+    name: Education-Tracking-System
+  datasource:
+    url: ${MYSQl_URL}
+    username: ${MYSQL_USERNAME}
+    password: ${MYSQL_PASSWORD}
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        format_sql: true
+    show-sql: true
+
+#Application Properties
+super_admin:
+  email: ${SUPER-ADMIN_EMAIL}
