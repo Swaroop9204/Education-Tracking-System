@@ -53,7 +53,7 @@ public class UserService {
 
 		return mapper.mapToUserResponse(user);
 	}
-	
+
 	public UserResponse updateTrainer(TrainerRequest trainerRequest,String userId) {		
 		return userRepository.findById(userId).map((user)->{
 			user=mapper.mapToTrainerEntity(trainerRequest,(Trainer) user);
@@ -61,7 +61,7 @@ public class UserService {
 			return mapper.mapToUserResponse(user);
 		}).orElseThrow(()->new UserNotFoundByIdException("failed to update the trainer"));
 	}
-	
+
 	public StudentResponse updateStudent(StudentRequest studentRequest, String userId) {
 		return userRepository.findById(userId).map((user)->{
 			user=mapper.mapToStudentEntity(studentRequest,(Student) user);
@@ -88,13 +88,13 @@ public class UserService {
 	public List<RatingResponse> viewRating(String userId) {
 		return userRepository.findById(userId).map(user->{
 			Student student=(Student)user;
-			List<RatingResponse> responses=new ArrayList<RatingResponse>();
-			student.getRatings().forEach(rating->{
-				responses.add(ratingMapper.mapToRatingResponseEntity(rating));
-			});
-			return responses;
-			
+			return student.getRatings()
+					.stream()
+					.map(rating->ratingMapper.mapToRatingResponseEntity(rating))
+					.toList();
 		}).orElseThrow(()->new UserNotFoundByIdException("student is not found by the given id"));
+
+
 	}
 
 
