@@ -5,6 +5,6 @@ import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "super_admins")
-public class Super_Admin extends User{
+public class SuperAdmin extends User{
 
 }

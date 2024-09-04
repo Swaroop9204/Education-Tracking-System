@@ -33,9 +33,9 @@ public User mapToUserEntity(RegistrationRequest registrationRequest, User user) 
 	}
 	public Trainer mapToTrainerEntity(TrainerRequest trainerRequest,Trainer trainer) {
 		if(trainerRequest.getUsername()!=null)
-		trainer.setUsername(trainerRequest.getUsername());
+			trainer.setUsername(trainerRequest.getUsername());
 		if(trainerRequest.getEmail()!=null)
-		trainer.setEmail(trainerRequest.getEmail());
+			trainer.setEmail(trainerRequest.getEmail());
 		trainer.setSubjects(trainerRequest.getSubjects());
 		return trainer;
 	}
@@ -49,9 +49,9 @@ public User mapToUserEntity(RegistrationRequest registrationRequest, User user) 
 	}
 	public Student mapToStudentEntity(StudentRequest studentRequest, Student student) {
 		if(studentRequest!=null)
-		student.setUsername(studentRequest.getUsername());
+			student.setUsername(studentRequest.getUsername());
 		if(studentRequest!=null)
-		student.setEmail(studentRequest.getEmail());
+			student.setEmail(studentRequest.getEmail());
 		student.setDegree(studentRequest.getDegree());
 		student.setStream(studentRequest.getStream());
 		student.setYearOfPassout(studentRequest.getYearOfPassout());

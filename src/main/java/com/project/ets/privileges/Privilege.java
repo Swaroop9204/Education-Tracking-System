@@ -21,8 +21,8 @@ public enum Privilege {
 	
 	WRITE_TECH_REPORT,
 	READ_TECH_REPORT,
-	
-	WrITE_RATING,
+
+	WRITE_RATING,
 	READ_RATING;
 	
 

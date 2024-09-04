@@ -56,7 +56,7 @@ public class BatchController {
 	@PatchMapping("/batches/{batchId}/cancel")
 	public ResponseEntity<ResponseStructure<BatchResponse>> cancelBatch(@PathVariable String batchId){
 		BatchResponse response=batchService.cancelBatch(batchId);
-		return responseBuilder.success(HttpStatus.OK, "batch updated successfully", response);
+		return responseBuilder.success(HttpStatus.OK, "batch updated to cancel successfully", response);
 	
 	}
 	
@@ -67,7 +67,7 @@ public class BatchController {
 	@PatchMapping("/batches/{batchId}/close")
 	public ResponseEntity<ResponseStructure<BatchResponse>> closeBatch(@PathVariable String batchId){
 		BatchResponse response=batchService.closeBatch(batchId);
-		return responseBuilder.success(HttpStatus.OK, "batch updated successfully", response);
+		return responseBuilder.success(HttpStatus.OK, "batch updated to close successfully", response);
 	}
 
 }
