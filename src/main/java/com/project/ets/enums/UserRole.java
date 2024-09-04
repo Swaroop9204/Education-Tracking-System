@@ -5,7 +5,7 @@ import java.util.List;
 import com.project.ets.privileges.Privilege;
 
 public enum UserRole {
-	SUPER_ADMIN(List.of(Privilege.READ_BATCH,Privilege.READ_MOCK,Privilege.READ_RATING,Privilege.READ_REQUIREMENT,
+	SUPER_ADMIN(List.of(Privilege.READ_BATCH,Privilege.WRITE_BATCH,Privilege.READ_MOCK,Privilege.READ_RATING,Privilege.READ_REQUIREMENT,
 			Privilege.READ_SCHEDULE,Privilege.READ_TECH_REPORT,Privilege.READ_USER,Privilege.WRITE_ADMIN,Privilege.WRITE_HR,
 			Privilege.WRITE_STUDENT,Privilege.WRITE_TRAINER)),
 	ADMIN(List.of(Privilege.READ_BATCH,Privilege.READ_MOCK,Privilege.READ_RATING,Privilege.READ_REQUIREMENT,
@@ -15,7 +15,7 @@ public enum UserRole {
 			Privilege.READ_REQUIREMENT,Privilege.WRITE_SCHEDULE,Privilege.READ_SCHEDULE,Privilege.READ_USER,
 			Privilege.READ_MOCK,Privilege.READ_TECH_REPORT)),
 	TRAINER(List.of(Privilege.WRITE_TRAINER,Privilege.READ_BATCH,Privilege.WRITE_MOCK,Privilege.WRITE_TECH_REPORT,Privilege.READ_USER,Privilege.READ_MOCK,
-			Privilege.READ_RATING,Privilege.WrITE_RATING)),
+			Privilege.READ_RATING,Privilege.WRITE_RATING)),
 	STUDENT(List.of(Privilege.READ_USER,Privilege.READ_MOCK,Privilege.READ_RATING,Privilege.READ_REQUIREMENT,
 			Privilege.READ_SCHEDULE,Privilege.READ_TECH_REPORT,Privilege.WRITE_STUDENT));
 	

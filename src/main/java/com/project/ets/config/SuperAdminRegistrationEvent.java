@@ -8,7 +8,7 @@ import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 
-import com.project.ets.entity.Super_Admin;
+import com.project.ets.entity.SuperAdmin;
 import com.project.ets.entity.User;
 import com.project.ets.enums.UserRole;
 import com.project.ets.repository.UserRepository;
@@ -35,7 +35,7 @@ public class SuperAdminRegistrationEvent {
 		List<User> list = userRepository.findByRole(UserRole.SUPER_ADMIN);
 		if(list.isEmpty()) {
 			log.info("super admin is not present creating one");
-			User user=new Super_Admin();
+			User user=new SuperAdmin();
 			user.setEmail(email);
 			user.setPassword(UUID.randomUUID().toString());
 			user.setRole(UserRole.SUPER_ADMIN);
