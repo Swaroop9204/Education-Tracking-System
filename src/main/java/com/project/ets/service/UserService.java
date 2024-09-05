@@ -1,8 +1,13 @@
 package com.project.ets.service;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
+import com.project.ets.util.MailSender;
+import com.project.ets.util.MessageModel;
+import jakarta.mail.MessagingException;
 import org.springframework.stereotype.Service;
 
 import com.project.ets.entity.Admin;
@@ -34,6 +39,7 @@ public class UserService {
 	private UserMapper mapper;
 	private RatingRepository ratingRepository;
 	private RatingMapper ratingMapper;
+	private MailSender mailSender;
 
 	public UserResponse saveUser(RegistrationRequest registrationRequest,UserRole role) {
 		User user = null;
@@ -94,6 +100,29 @@ public class UserService {
 					.toList();
 		}).orElseThrow(()->new UserNotFoundByIdException("student is not found by the given id"));
 
+
+	}
+
+	private void sendVerificationOtpToUsers(String mail,int otp) throws MessagingException {
+		String text="<!DOCTYPE html>\n" +
+				"<html lang=\"en\">\n" +
+				"<head>\n" +
+				"    <meta charset=\"UTF-8\">\n" +
+				"    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n" +
+				"    <title>Document</title>\n" +
+				"</head>\n" +
+				"<body>\n" +
+				"    <h3>Please verify the email by providing otp below</h3>\n" +
+				"    <p>This is from edu tracking system please verify your email by using below otp</p>\n" +
+				"    <h4>"+otp+"</h4>\n" +
+				"</body>\n" +
+				"</html>";
+		MessageModel messageModel=new MessageModel();
+		messageModel.setTo(mail);
+		messageModel.setSendDate(new Date());
+		messageModel.setText(text);
+		messageModel.setSubject("Verify your email");
+		mailSender.sendMail(messageModel);
 
 	}
 
