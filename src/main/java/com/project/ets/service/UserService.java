@@ -4,7 +4,9 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Random;
 
+import com.project.ets.config.RandomGenerator;
 import com.project.ets.util.MailSender;
 import com.project.ets.util.MessageModel;
 import jakarta.mail.MessagingException;
@@ -40,6 +42,7 @@ public class UserService {
 	private RatingRepository ratingRepository;
 	private RatingMapper ratingMapper;
 	private MailSender mailSender;
+	private Random random;
 
 	public UserResponse saveUser(RegistrationRequest registrationRequest,UserRole role) {
 		User user = null;
@@ -125,6 +128,4 @@ public class UserService {
 		mailSender.sendMail(messageModel);
 
 	}
-
-
 }
