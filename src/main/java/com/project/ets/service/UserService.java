@@ -10,6 +10,7 @@ import com.project.ets.config.RandomGenerator;
 import com.project.ets.util.MailSender;
 import com.project.ets.util.MessageModel;
 import jakarta.mail.MessagingException;
+import org.springframework.cache.annotation.CachePut;
 import org.springframework.stereotype.Service;
 
 import com.project.ets.entity.Admin;
@@ -44,6 +45,7 @@ public class UserService {
 	private MailSender mailSender;
 	private Random random;
 
+	@CachePut(cacheNames ="nonverifieduser",key = "#registrationRequest.email")
 	public UserResponse saveUser(RegistrationRequest registrationRequest,UserRole role) {
 		User user = null;
 		switch (role) {
