@@ -55,13 +55,11 @@ public class UserService {
 		case TRAINER -> user = new Trainer();
 		default -> throw new IllegalArgumentException("Unexpected value: " + role);
 		}
-
 		if(user != null) {
 			user = mapper.mapToUserEntity(registrationRequest, user);
 			user.setRole(role);
 			int otp=random.nextInt(100000,999999);
 		}
-
 		return mapper.mapToUserResponse(user);
 	}
 

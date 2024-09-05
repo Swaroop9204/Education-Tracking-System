@@ -16,7 +16,7 @@
     </cache>
     <cache alias="nonverifieduser">
         <key-type>java.lang.String</key-type>
-        <value-type>com.project.ets.responsedto.UserResponse</value-type>
+        <value-type>com.project.ets.entity.User</value-type>
         <expiry>
             <ttl unit="minutes">10</ttl>
         </expiry>
