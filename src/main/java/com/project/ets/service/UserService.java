@@ -45,7 +45,6 @@ public class UserService {
 	private MailSender mailSender;
 	private Random random;
 
-	@CachePut(cacheNames ="nonverifieduser",key = "#registrationRequest.email")
 	public UserResponse saveUser(RegistrationRequest registrationRequest,UserRole role) {
 		User user = null;
 		switch (role) {
