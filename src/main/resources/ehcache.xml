@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<config xmlns:xsi="<http://www.w3.org/2001/XMLSchema-instance>"
-        xmlns="<http://www.ehcache.org/v3>"
-        xsi:schemaLocation="<http://www.ehcache.org/v3> <http://www.ehcache.org/schema/ehcache-core-3.0.xsd>">
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns="http://www.ehcache.org/v3"
+        xsi:schemaLocation="http://www.ehcache.org/v3 http://www.ehcache.org/schema/ehcache-core-3.0.xsd">
 
     <cache alias="otps">
-        <key-type>java.lang.Integer</key-type>
+        <key-type>java.lang.String</key-type>
         <value-type>java.lang.Integer</value-type>
         <expiry>
             <ttl unit="minutes">2</ttl>
@@ -14,6 +14,7 @@
             <offheap unit="MB">10</offheap>
         </resources>
     </cache>
+
     <cache alias="nonverifieduser">
         <key-type>java.lang.String</key-type>
         <value-type>com.project.ets.entity.User</value-type>
@@ -25,4 +26,5 @@
             <offheap unit="MB">20</offheap>
         </resources>
     </cache>
+
 </config>

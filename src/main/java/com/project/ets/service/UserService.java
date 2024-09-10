@@ -1,17 +1,18 @@
 package com.project.ets.service;
 
-import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Random;
 
-import com.project.ets.config.RandomGenerator;
+import com.project.ets.exception.InvalidOtpException;
+import com.project.ets.exception.RegistrationSessionExpiredexception;
+import com.project.ets.requstdto.OtpRequest;
 import com.project.ets.util.CacheHelper;
-import com.project.ets.util.MailSender;
+import com.project.ets.util.MailSenderService;
 import com.project.ets.util.MessageModel;
 import jakarta.mail.MessagingException;
-import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.Cache;
+import org.springframework.cache.CacheManager;
 import org.springframework.stereotype.Service;
 
 import com.project.ets.entity.Admin;
@@ -36,6 +37,9 @@ import com.project.ets.security.RegistrationRequest;
 
 import lombok.AllArgsConstructor;
 
+import javax.lang.model.element.Element;
+
+
 @Service
 @AllArgsConstructor
 public class UserService {
@@ -43,11 +47,11 @@ public class UserService {
 	private UserMapper mapper;
 	private RatingRepository ratingRepository;
 	private RatingMapper ratingMapper;
-	private MailSender mailSender;
+	private MailSenderService otpMailSender;
 	private Random random;
 	private CacheHelper cacheHelper;
 
-	public UserResponse saveUser(RegistrationRequest registrationRequest,UserRole role) {
+	public UserResponse saveUser(RegistrationRequest registrationRequest,UserRole role)  {
 		User user = null;
 		switch (role) {
 		case ADMIN -> user = new Admin();
@@ -61,7 +65,8 @@ public class UserService {
 			user.setRole(role);
 			int otp=random.nextInt(100000,999999);
 			cacheHelper.cacheUser(user);
-			cacheHelper.cacheOtp(otp);
+			cacheHelper.cacheOtp(otp,user.getEmail());
+			sendVerificationOtpToUsers(user.getEmail(),otp);
 		}
 		return mapper.mapToUserResponse(user);
 	}
@@ -109,7 +114,7 @@ public class UserService {
 
 	}
 
-	private void sendVerificationOtpToUsers(String mail,int otp) throws MessagingException {
+	private void sendVerificationOtpToUsers(String mail,int otp) {
 		String text="<!DOCTYPE html>\n" +
 				"<html lang=\"en\">\n" +
 				"<head>\n" +
@@ -128,7 +133,20 @@ public class UserService {
 		messageModel.setSendDate(new Date());
 		messageModel.setText(text);
 		messageModel.setSubject("Verify your email");
-		mailSender.sendMail(messageModel);
+		otpMailSender.sendMail(messageModel);
 
+	}
+
+	public UserResponse verifyOtp(OtpRequest otpRequest) {
+		Integer otp=cacheHelper.getOtp(otpRequest.getEmail());
+		if(!otp.equals(otpRequest.getOtp())){
+			throw new InvalidOtpException("otp is incorrect or otp is expire, please try again");
+		}
+		User user=cacheHelper.getRegisterUser(otpRequest.getEmail());
+		if(!user.getEmail().equals(otpRequest.getEmail()))
+			throw new RegistrationSessionExpiredexception("Registartion Session Expired, Please try again");
+
+		user = userRepository.save(user);
+		return mapper.mapToUserResponse(user);
 	}
 }

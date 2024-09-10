@@ -1,5 +1,6 @@
 package com.project.ets.entity;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
 import org.springframework.data.annotation.CreatedDate;
@@ -26,7 +27,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @Inheritance(strategy = InheritanceType.JOINED)
-public class User {
+public class User implements Serializable {
 	@Id
 	@Column(name = "userId")
 	@GenerateSequenceId

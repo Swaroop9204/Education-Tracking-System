@@ -7,7 +7,6 @@ spring:
     url: ${MYSQL_URL}
     username: ${MYSQL_USERNAME}
     password: ${MYSQL_PASSWORD}
-
   jpa:
     hibernate:
       ddl-auto: update
@@ -17,6 +16,8 @@ spring:
         dialect: org.hibernate.dialect.MySQLDialect
 
     show-sql: true
+
+#
   mail:
     host: smtp.gmail.com
     port: 587
@@ -28,9 +29,12 @@ spring:
           starttls:
             enable: true
             required: true
+
+#
   cache:
     jcache:
       config: "classpath:ehcache.xml"
+
 #Application Properties
 super_admin:
   email: ${super-admin.email}
