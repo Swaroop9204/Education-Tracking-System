@@ -1,8 +1,18 @@
 package com.project.ets.service;
 
-import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Random;
 
+import com.project.ets.exception.InvalidOtpException;
+import com.project.ets.exception.RegistrationSessionExpiredexception;
+import com.project.ets.requstdto.OtpRequest;
+import com.project.ets.util.CacheHelper;
+import com.project.ets.util.MailSenderService;
+import com.project.ets.util.MessageModel;
+import jakarta.mail.MessagingException;
+import org.springframework.cache.Cache;
+import org.springframework.cache.CacheManager;
 import org.springframework.stereotype.Service;
 
 import com.project.ets.entity.Admin;
@@ -27,6 +37,9 @@ import com.project.ets.security.RegistrationRequest;
 
 import lombok.AllArgsConstructor;
 
+import javax.lang.model.element.Element;
+
+
 @Service
 @AllArgsConstructor
 public class UserService {
@@ -34,8 +47,11 @@ public class UserService {
 	private UserMapper mapper;
 	private RatingRepository ratingRepository;
 	private RatingMapper ratingMapper;
+	private MailSenderService otpMailSender;
+	private Random random;
+	private CacheHelper cacheHelper;
 
-	public UserResponse saveUser(RegistrationRequest registrationRequest,UserRole role) {
+	public UserResponse saveUser(RegistrationRequest registrationRequest,UserRole role)  {
 		User user = null;
 		switch (role) {
 		case ADMIN -> user = new Admin();
@@ -44,13 +60,14 @@ public class UserService {
 		case TRAINER -> user = new Trainer();
 		default -> throw new IllegalArgumentException("Unexpected value: " + role);
 		}
-
 		if(user != null) {
 			user = mapper.mapToUserEntity(registrationRequest, user);
 			user.setRole(role);
-			user = userRepository.save(user);
+			int otp=random.nextInt(100000,999999);
+			cacheHelper.cacheUser(user);
+			cacheHelper.cacheOtp(otp,user.getEmail());
+			sendVerificationOtpToUsers(user.getEmail(),otp);
 		}
-
 		return mapper.mapToUserResponse(user);
 	}
 
@@ -97,5 +114,39 @@ public class UserService {
 
 	}
 
+	private void sendVerificationOtpToUsers(String mail,int otp) {
+		String text="<!DOCTYPE html>\n" +
+				"<html lang=\"en\">\n" +
+				"<head>\n" +
+				"    <meta charset=\"UTF-8\">\n" +
+				"    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n" +
+				"    <title>Document</title>\n" +
+				"</head>\n" +
+				"<body>\n" +
+				"    <h3>Please verify the email by providing otp below</h3>\n" +
+				"    <p>This is from edu tracking system please verify your email by using below otp</p>\n" +
+				"    <h4>"+otp+"</h4>\n" +
+				"</body>\n" +
+				"</html>";
+		MessageModel messageModel=new MessageModel();
+		messageModel.setTo(mail);
+		messageModel.setSendDate(new Date());
+		messageModel.setText(text);
+		messageModel.setSubject("Verify your email");
+		otpMailSender.sendMail(messageModel);
 
+	}
+
+	public UserResponse verifyOtp(OtpRequest otpRequest) {
+		Integer otp=cacheHelper.getOtp(otpRequest.getEmail());
+		if(!otp.equals(otpRequest.getOtp())){
+			throw new InvalidOtpException("otp is incorrect or otp is expire, please try again");
+		}
+		User user=cacheHelper.getRegisterUser(otpRequest.getEmail());
+		if(!user.getEmail().equals(otpRequest.getEmail()))
+			throw new RegistrationSessionExpiredexception("Registartion Session Expired, Please try again");
+
+		user = userRepository.save(user);
+		return mapper.mapToUserResponse(user);
+	}
 }
