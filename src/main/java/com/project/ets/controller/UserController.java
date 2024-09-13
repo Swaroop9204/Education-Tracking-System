@@ -44,7 +44,7 @@ public class UserController {
 	@Operation(description = "This end point is used to save the admin to the database",responses = {
 			@ApiResponse(responseCode = "201",description = "admin is created successfully"),
 			@ApiResponse(responseCode = "500",description = "internal server error",content = {@Content(schema = @Schema(anyOf = RuntimeException.class))})})
-	@PostMapping("/admins/register")
+	@PostMapping("/register/admins")
 	public ResponseEntity<ResponseStructure<UserResponse>> saveAdmin(@RequestBody @Valid RegistrationRequest registrationRequest) {
 		UserResponse adminResponse=userService.saveUser(registrationRequest,UserRole.ADMIN);
 		return responseBuilder.success(HttpStatus.ACCEPTED,"Accepted the request verify the mail to register", adminResponse);
@@ -53,7 +53,7 @@ public class UserController {
 	@Operation(description = "This end point is used to save the hr to the database",responses = {
 			@ApiResponse(responseCode = "201",description = "hr is created successfully"),
 			@ApiResponse(responseCode = "500",description = "internal server error",content = {@Content(schema = @Schema(anyOf = RuntimeException.class))})})
-	@PostMapping("/hrs/register")
+	@PostMapping("/register/hrs")
 	public ResponseEntity<ResponseStructure<UserResponse>>saveHr(@RequestBody @Valid RegistrationRequest registrationRequest)  {
 		UserResponse hrResponse=userService.saveUser(registrationRequest,UserRole.HR);
 		return responseBuilder.success(HttpStatus.ACCEPTED, "Accepted the request verify the mail to register", hrResponse);
@@ -62,7 +62,7 @@ public class UserController {
 	@Operation(description = "This end point is used to save the trainer to the database",responses = {
 			@ApiResponse(responseCode = "201",description = "trainer is created successfully"),
 			@ApiResponse(responseCode = "500",description = "internal server error",content = {@Content(schema = @Schema(anyOf = RuntimeException.class))})})
-	@PostMapping("/trainers/register")
+	@PostMapping("/register/trainers")
 	public ResponseEntity<ResponseStructure<UserResponse>> saveTrainer(@RequestBody @Valid RegistrationRequest registrationRequest)  {
 		UserResponse response=userService.saveUser(registrationRequest,UserRole.TRAINER);
 		return responseBuilder.success(HttpStatus.ACCEPTED, "Accepted the request verify the mail to register", response);
@@ -80,7 +80,7 @@ public class UserController {
 	@Operation(description = "This end point is used to save the student to the database",responses = {
 			@ApiResponse(responseCode = "201",description = "student is created successfully"),
 			@ApiResponse(responseCode = "500",description = "internal server error",content = {@Content(schema = @Schema(anyOf = RuntimeException.class))})})
-	@PostMapping("/students/register")
+	@PostMapping("/register/students")
 	public ResponseEntity<ResponseStructure<UserResponse>> saveStudent(@RequestBody @Valid RegistrationRequest registrationRequest)  {
 		UserResponse response=userService.saveUser(registrationRequest,UserRole.STUDENT);
 		return responseBuilder.success(HttpStatus.ACCEPTED, "Accepted the request verify the mail to register", response);
@@ -114,7 +114,7 @@ public class UserController {
 		return responseBuilder.success(HttpStatus.FOUND, "found the ratings of the student", responses);
 	}
 
-	@GetMapping("registration/verifivation")
+	@GetMapping("verify/users/register")
 	public ResponseEntity<ResponseStructure<UserResponse>> verifyOtp(@RequestBody OtpRequest otpRequest){
 		UserResponse userResponse=userService.verifyOtp(otpRequest);
 		return responseBuilder.success(HttpStatus.CREATED,"Registered the user successfully",userResponse);
