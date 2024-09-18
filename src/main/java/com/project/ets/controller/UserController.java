@@ -2,8 +2,8 @@ package com.project.ets.controller;
 
 import java.util.List;
 
+import com.project.ets.requstdto.LoginRequest;
 import com.project.ets.requstdto.OtpRequest;
-import jakarta.mail.MessagingException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -114,10 +114,15 @@ public class UserController {
 		return responseBuilder.success(HttpStatus.FOUND, "found the ratings of the student", responses);
 	}
 
-	@GetMapping("verify/users/register")
+	@GetMapping("verify/email")
 	public ResponseEntity<ResponseStructure<UserResponse>> verifyOtp(@RequestBody OtpRequest otpRequest){
 		UserResponse userResponse=userService.verifyOtp(otpRequest);
 		return responseBuilder.success(HttpStatus.CREATED,"Registered the user successfully",userResponse);
+	}
+
+	@PostMapping("/login")
+	public String userLogin(@RequestBody LoginRequest loginRequest){
+		return userService.userLogin(loginRequest);
 	}
 
 }

@@ -1,5 +1,7 @@
 package com.project.ets.security;
 
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.JwtParser;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
@@ -14,9 +16,9 @@ import java.util.Map;
 @Service
 public class JWT_Service {
 
-    @Value("${myapp.jwt.secret}" )
+    @Value("${my_app.jwt.secret}" )
     private String secret;
-    @Value("${myapp.jwt.access_expiry}")
+    @Value("${my_app.jwt.access_expiry}")
     private long access_expiry;
 
 
@@ -31,5 +33,12 @@ public class JWT_Service {
 
     private Key getSigninKey(){
        return Keys.hmacShaKeyFor(Decoders.BASE64.decode(secret));
+    }
+
+    public Claims parseJwt(String token){
+        JwtParser jwtParser=Jwts.parserBuilder()
+                .setSigningKey(getSigninKey())
+                .build();
+        return jwtParser.parseClaimsJws(token).getBody();
     }
 }

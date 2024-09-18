@@ -2,17 +2,25 @@ package com.project.ets.service;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 import java.util.Random;
 
 import com.project.ets.exception.InvalidOtpException;
 import com.project.ets.exception.RegistrationSessionExpiredexception;
+import com.project.ets.requstdto.LoginRequest;
 import com.project.ets.requstdto.OtpRequest;
+import com.project.ets.security.JWT_Service;
 import com.project.ets.util.CacheHelper;
 import com.project.ets.util.MailSenderService;
 import com.project.ets.util.MessageModel;
 import jakarta.mail.MessagingException;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import com.project.ets.entity.Admin;
@@ -42,6 +50,7 @@ import javax.lang.model.element.Element;
 
 @Service
 @AllArgsConstructor
+@Slf4j
 public class UserService {
 	private UserRepository userRepository;
 	private UserMapper mapper;
@@ -50,6 +59,8 @@ public class UserService {
 	private MailSenderService otpMailSender;
 	private Random random;
 	private CacheHelper cacheHelper;
+	private AuthenticationManager authenticationManager;
+	private JWT_Service jwtService;
 
 	public UserResponse saveUser(RegistrationRequest registrationRequest,UserRole role)  {
 		User user = null;
@@ -148,5 +159,21 @@ public class UserService {
 
 		user = userRepository.save(user);
 		return mapper.mapToUserResponse(user);
+	}
+
+	public String userLogin(LoginRequest loginRequest){
+		UsernamePasswordAuthenticationToken authenticationToken=new UsernamePasswordAuthenticationToken(loginRequest.getEmail(),loginRequest.getPassword());
+		Authentication authentication=authenticationManager.authenticate(authenticationToken);
+		if(authentication.isAuthenticated()) {
+			String token= userRepository.findByEmail(loginRequest.getEmail())
+					.map(user -> {
+						return jwtService.createJwt(user.getUserId(), user.getEmail(), user.getRole().name());
+
+					}).orElseThrow(()->new UsernameNotFoundException("user name not found"));
+			return token;
+		}
+
+		return null;
+
 	}
 }
