@@ -29,15 +29,12 @@ public class JwtFilter extends OncePerRequestFilter {
         String token = request.getHeader("Authorization");
 
         if(token!=null) {
-            log.info("token is not null");
             token = token.substring(7);
             if (!token.isEmpty()) {
-                log.info("Extracted token, token is not empty");
                 Claims claims = jwtService.parseJwt(token);
                 String role = claims.get("role", String.class);
                 String email = claims.get("email", String.class);
                 if (role != null && email != null) {
-                    log.info("Extracted user role and email ID");
                     UserRole userRole = UserRole.valueOf(role);
                     UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(email, null, userRole.getPrivileges()
                             .stream()
@@ -51,10 +48,6 @@ public class JwtFilter extends OncePerRequestFilter {
                 }
             }
         }
-        else{
-           log.info(token);
-        }
-
         filterChain.doFilter(request, response);
     }
 }
