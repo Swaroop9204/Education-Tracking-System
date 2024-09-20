@@ -124,5 +124,9 @@ public class UserController {
 	public ResponseEntity<ResponseStructure<UserResponse>> userLogin(@RequestBody LoginRequest loginRequest){
 		return userService.userLogin(loginRequest);
 	}
+	@PostMapping("/refresh-login")
+	public ResponseEntity<ResponseStructure<UserResponse>> refreshLogin(){
+		return userService.refreshLogin();
+	}
 
 }

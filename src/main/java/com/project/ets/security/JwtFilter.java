@@ -40,12 +40,10 @@ public class JwtFilter extends OncePerRequestFilter {
                 String token = accessTokenCookie.get().getValue();
 
                 if (!token.isEmpty()) {
-                    System.out.println("access token is not empty");
                     Claims claims = jwtService.parseJwt(token);
                     String role = claims.get("role", String.class);
                     String email = claims.get("email", String.class);
                     if (role != null && email != null) {
-                        System.out.println("email is present");
                         UserRole userRole = UserRole.valueOf(role);
                         UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(email, null, userRole.getPrivileges()
                                 .stream()
@@ -55,7 +53,6 @@ public class JwtFilter extends OncePerRequestFilter {
                                 .toList());
                         authenticationToken.setDetails(new WebAuthenticationDetails(request));
                         SecurityContextHolder.getContext().setAuthentication(authenticationToken);
-                        log.info("Token authenticated successfully.");
                     }
                 }
             }

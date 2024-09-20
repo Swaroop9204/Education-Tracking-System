@@ -23,6 +23,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
@@ -191,12 +193,12 @@ public class UserService {
     public ResponseEntity<ResponseStructure<UserResponse>> userLogin(LoginRequest loginRequest) {
         UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(loginRequest.getEmail(), loginRequest.getPassword());
         Authentication authentication = authenticationManager.authenticate(authenticationToken);
-        System.out.println("checking authentication");
         if (authentication.isAuthenticated()) {
-            System.out.println("authenticated");
             return userRepository.findByEmail(loginRequest.getEmail())
                     .map(user -> {
-                        HttpHeaders httpHeaders = grantAccess(user);
+                        HttpHeaders httpHeaders = new HttpHeaders();
+                        httpHeaders = grantAccessAccessToken(user, httpHeaders);
+                        httpHeaders = grantAccessRefreshToken(user, httpHeaders);
                         return ResponseEntity.ok().headers(httpHeaders).body(ResponseStructure.create(HttpStatus.OK.value(), "login successfulyy", mapper.mapToUserResponse(user)));
                     }).orElseThrow(() -> new UsernameNotFoundException("user name not found"));
         } else {
@@ -204,12 +206,15 @@ public class UserService {
         }
     }
 
-    private HttpHeaders grantAccess(User user) {
+    private HttpHeaders grantAccessAccessToken(User user, HttpHeaders httpHeaders) {
         String access_token = jwtService.generateAccessToken(user.getUserId(), user.getEmail(), user.getRole().name());
+        httpHeaders.add(HttpHeaders.SET_COOKIE, createCookie("at", access_token, access_expiry * 60));
+        return httpHeaders;
+    }
+
+    private HttpHeaders grantAccessRefreshToken(User user, HttpHeaders httpHeaders) {
         String refresh_token = jwtService.generateRefreshToken(user.getUserId(), user.getEmail(), user.getRole().name());
-        HttpHeaders httpHeaders = new HttpHeaders();
-        httpHeaders.add(HttpHeaders.SET_COOKIE, createCookie("at", access_token, access_expiry*60));
-        httpHeaders.add(HttpHeaders.SET_COOKIE, createCookie("rt", refresh_token, refresh_expiry*60));
+        httpHeaders.add(HttpHeaders.SET_COOKIE, createCookie("rt", refresh_token, refresh_expiry * 60));
         return httpHeaders;
     }
 
@@ -223,5 +228,14 @@ public class UserService {
                 .maxAge(age)
                 .build()
                 .toString();
+    }
+
+    public ResponseEntity<ResponseStructure<UserResponse>> refreshLogin() {
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        return userRepository.findByEmail(email).map(user -> {
+            HttpHeaders httpHeaders = new HttpHeaders();
+            httpHeaders = grantAccessAccessToken(user, httpHeaders);
+            return ResponseEntity.ok().headers(httpHeaders).body(ResponseStructure.create(HttpStatus.OK.value(), "refresh login successfulyy", mapper.mapToUserResponse(user)));
+        }).orElseThrow(() -> new UsernameNotFoundException("username is not found"));
     }
 }

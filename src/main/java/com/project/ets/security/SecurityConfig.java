@@ -3,6 +3,7 @@ package com.project.ets.security;
 import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.annotation.Order;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
@@ -23,8 +24,10 @@ public class SecurityConfig {
     private JWT_Service jwtService;
 
     @Bean
+    @Order(2)
     SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity)throws Exception{
         return httpSecurity.csrf(AbstractHttpConfigurer::disable)
+                .securityMatchers(matcher->matcher.requestMatchers("/"))
                 .authorizeHttpRequests(authorize->authorize
                         .requestMatchers("/register/**","/login","verify/email")
                         .permitAll()
@@ -32,6 +35,18 @@ public class SecurityConfig {
                         authenticated())
                 .sessionManagement(management->management.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .addFilterBefore(new JwtFilter(jwtService), UsernamePasswordAuthenticationFilter.class)
+                .build();
+    }
+
+    @Bean
+    @Order(1)
+    SecurityFilterChain refreshFilterChain(HttpSecurity httpSecurity) throws Exception {
+        return httpSecurity.csrf(AbstractHttpConfigurer::disable)
+                .securityMatchers(matcher->matcher.requestMatchers("/refresh-login/**"))
+                .authorizeHttpRequests(authorize->authorize.anyRequest()
+                        .authenticated())
+                .sessionManagement(management->management.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .addFilterBefore(new RefreshFilter(jwtService),UsernamePasswordAuthenticationFilter.class)
                 .build();
     }
     @Bean
