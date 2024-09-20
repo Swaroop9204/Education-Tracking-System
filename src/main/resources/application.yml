@@ -42,3 +42,4 @@ my_app:
   jwt:
     secret: ${JWT_SECRET}
     access_expiry: 5
+    refresh_expiry: 1440

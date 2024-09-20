@@ -4,6 +4,7 @@ import com.project.ets.enums.UserRole;
 import io.jsonwebtoken.Claims;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.AllArgsConstructor;
@@ -17,6 +18,8 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Optional;
 
 @Slf4j
 @AllArgsConstructor
@@ -25,29 +28,39 @@ public class JwtFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        System.out.println(request.getHeaders("Authorization"));
-        String token = request.getHeader("Authorization");
+        Cookie[] cookies = request.getCookies();
 
-        if(token!=null) {
-            token = token.substring(7);
-            if (!token.isEmpty()) {
-                Claims claims = jwtService.parseJwt(token);
-                String role = claims.get("role", String.class);
-                String email = claims.get("email", String.class);
-                if (role != null && email != null) {
-                    UserRole userRole = UserRole.valueOf(role);
-                    UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(email, null, userRole.getPrivileges()
-                            .stream()
-                            .map((privilage) -> {
-                                return new SimpleGrantedAuthority(privilage.name());
-                            })
-                            .toList());
-                    authenticationToken.setDetails(new WebAuthenticationDetails(request));
-                    SecurityContextHolder.getContext().setAuthentication(authenticationToken);
-                    log.info("Token authenticated successfully.");
+        if (cookies != null) {
+            Optional<Cookie> accessTokenCookie = Arrays.stream(cookies)
+                    .filter(cookie -> "at".equals(cookie.getName()))
+                    .findFirst();
+
+            if (accessTokenCookie.isPresent()) {
+                System.out.println("access token is present");
+                String token = accessTokenCookie.get().getValue();
+
+                if (!token.isEmpty()) {
+                    System.out.println("access token is not empty");
+                    Claims claims = jwtService.parseJwt(token);
+                    String role = claims.get("role", String.class);
+                    String email = claims.get("email", String.class);
+                    if (role != null && email != null) {
+                        System.out.println("email is present");
+                        UserRole userRole = UserRole.valueOf(role);
+                        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(email, null, userRole.getPrivileges()
+                                .stream()
+                                .map((privilage) -> {
+                                    return new SimpleGrantedAuthority(privilage.name());
+                                })
+                                .toList());
+                        authenticationToken.setDetails(new WebAuthenticationDetails(request));
+                        SecurityContextHolder.getContext().setAuthentication(authenticationToken);
+                        log.info("Token authenticated successfully.");
+                    }
                 }
             }
         }
         filterChain.doFilter(request, response);
     }
+
 }

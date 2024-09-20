@@ -121,7 +121,7 @@ public class UserController {
 	}
 
 	@PostMapping("/login")
-	public String userLogin(@RequestBody LoginRequest loginRequest){
+	public ResponseEntity<ResponseStructure<UserResponse>> userLogin(@RequestBody LoginRequest loginRequest){
 		return userService.userLogin(loginRequest);
 	}
 
