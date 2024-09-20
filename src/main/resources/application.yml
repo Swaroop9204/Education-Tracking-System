@@ -17,7 +17,7 @@ spring:
 
     show-sql: true
 
-#
+  #
   mail:
     host: smtp.gmail.com
     port: 587
@@ -30,7 +30,7 @@ spring:
             enable: true
             required: true
 
-#
+  #2nd level caching
   cache:
     jcache:
       config: "classpath:ehcache.xml"
@@ -38,3 +38,8 @@ spring:
 #Application Properties
 super_admin:
   email: ${super-admin.email}
+my_app:
+  jwt:
+    secret: ${JWT_SECRET}
+    access_expiry: 5
+    refresh_expiry: 1440
