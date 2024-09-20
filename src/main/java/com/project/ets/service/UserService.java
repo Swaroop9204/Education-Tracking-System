@@ -6,7 +6,7 @@ import com.project.ets.exception.InvalidOtpException;
 import com.project.ets.exception.RegistrationSessionExpiredexception;
 import com.project.ets.requstdto.LoginRequest;
 import com.project.ets.requstdto.OtpRequest;
-import com.project.ets.security.JWT_Service;
+import com.project.ets.security.JwtService;
 import com.project.ets.util.CacheHelper;
 import com.project.ets.util.MailSenderService;
 import com.project.ets.util.MessageModel;
@@ -55,7 +55,7 @@ public class UserService {
     private final Random random;
     private final CacheHelper cacheHelper;
     private final AuthenticationManager authenticationManager;
-    private final JWT_Service jwtService;
+    private final JwtService jwtService;
     @Value("${my_app.jwt.access_expiry}")
     private long accessExpiry;
 
@@ -70,7 +70,7 @@ public class UserService {
                        Random random,
                        CacheHelper cacheHelper,
                        AuthenticationManager authenticationManager,
-                       JWT_Service jwtService) {
+                       JwtService jwtService) {
         this.userRepository = userRepository;
         this.mapper = mapper;
         this.ratingRepository = ratingRepository;
@@ -103,7 +103,7 @@ public class UserService {
     }
 
     public UserResponse updateTrainer(TrainerRequest trainerRequest, String userId) {
-        return userRepository.findById(userId).map((user) -> {
+        return userRepository.findById(userId).map(user -> {
             user = mapper.mapToTrainerEntity(trainerRequest, (Trainer) user);
             user = userRepository.save(user);
             return mapper.mapToUserResponse(user);
@@ -111,7 +111,7 @@ public class UserService {
     }
 
     public StudentResponse updateStudent(StudentRequest studentRequest, String userId) {
-        return userRepository.findById(userId).map((user) -> {
+        return userRepository.findById(userId).map(user-> {
             user = mapper.mapToStudentEntity(studentRequest, (Student) user);
             user = userRepository.save(user);
             return mapper.mapToStudentResponse((Student) user);
@@ -198,13 +198,13 @@ public class UserService {
     }
 
     private void grantAccessAccessToken(User user, HttpHeaders httpHeaders) {
-        String access_token = jwtService.generateAccessToken(user.getUserId(), user.getEmail(), user.getRole().name());
-        httpHeaders.add(HttpHeaders.SET_COOKIE, createCookie("at", access_token, accessExpiry * 60));
+        String accessToken = jwtService.generateAccessToken(user.getUserId(), user.getEmail(), user.getRole().name());
+        httpHeaders.add(HttpHeaders.SET_COOKIE, createCookie("at", accessToken, accessExpiry * 60));
     }
 
     private void grantAccessRefreshToken(User user, HttpHeaders httpHeaders) {
-        String refresh_token = jwtService.generateRefreshToken(user.getUserId(), user.getEmail(), user.getRole().name());
-        httpHeaders.add(HttpHeaders.SET_COOKIE, createCookie("rt", refresh_token, refreshExpiry * 60));
+        String refreshToken = jwtService.generateRefreshToken(user.getUserId(), user.getEmail(), user.getRole().name());
+        httpHeaders.add(HttpHeaders.SET_COOKIE, createCookie("rt", refreshToken, refreshExpiry * 60));
     }
 
     private String createCookie(String name, String value, long age) {

@@ -14,7 +14,7 @@ import lombok.AllArgsConstructor;
 @RestControllerAdvice
 @AllArgsConstructor
 public class BatchExceptionHandler {
-	private AppResponseBuilder responseBuilder;
+	private final AppResponseBuilder responseBuilder;
 	
 	@ExceptionHandler(BatchNotFoundByIdException.class)
 	public ResponseEntity<ErrorStructure<String>> handleBatchNotFoundById(BatchNotFoundByIdException exception){
