@@ -17,9 +17,7 @@ public class CustomUserDatails implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return user.getRole().getPrivileges().stream().map((privilage)->{
-           return new SimpleGrantedAuthority(privilage.name());
-        }).toList();
+        return user.getRole().getPrivileges().stream().map(privilage->new SimpleGrantedAuthority(privilage.name())).toList();
     }
 
     @Override

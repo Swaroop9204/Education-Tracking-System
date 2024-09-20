@@ -38,9 +38,7 @@ public class RefreshFilter extends OncePerRequestFilter {
                        UserRole userRole=UserRole.valueOf(role);
                        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(email, null, userRole.getPrivileges()
                                .stream()
-                               .map((privilage) -> {
-                                   return new SimpleGrantedAuthority(privilage.name());
-                               })
+                               .map(privilage ->new SimpleGrantedAuthority(privilage.name()))
                                .toList());
                        authenticationToken.setDetails(new WebAuthenticationDetails(request));
                        SecurityContextHolder.getContext().setAuthentication(authenticationToken);

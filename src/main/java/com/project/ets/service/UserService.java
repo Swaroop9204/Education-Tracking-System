@@ -57,10 +57,10 @@ public class UserService {
     private final AuthenticationManager authenticationManager;
     private final JWT_Service jwtService;
     @Value("${my_app.jwt.access_expiry}")
-    private long access_expiry;
+    private long accessExpiry;
 
     @Value("${my_app.jwt.refresh_expiry}")
-    private long refresh_expiry;
+    private long refreshExpiry;
 
     public UserService(UserRepository userRepository,
                        UserMapper mapper,
@@ -199,14 +199,12 @@ public class UserService {
 
     private void grantAccessAccessToken(User user, HttpHeaders httpHeaders) {
         String access_token = jwtService.generateAccessToken(user.getUserId(), user.getEmail(), user.getRole().name());
-        httpHeaders.add(HttpHeaders.SET_COOKIE, createCookie("at", access_token, access_expiry * 60));
-        return;
+        httpHeaders.add(HttpHeaders.SET_COOKIE, createCookie("at", access_token, accessExpiry * 60));
     }
 
     private void grantAccessRefreshToken(User user, HttpHeaders httpHeaders) {
         String refresh_token = jwtService.generateRefreshToken(user.getUserId(), user.getEmail(), user.getRole().name());
-        httpHeaders.add(HttpHeaders.SET_COOKIE, createCookie("rt", refresh_token, refresh_expiry * 60));
-        return ;
+        httpHeaders.add(HttpHeaders.SET_COOKIE, createCookie("rt", refresh_token, refreshExpiry * 60));
     }
 
     private String createCookie(String name, String value, long age) {

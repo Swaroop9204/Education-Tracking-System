@@ -34,7 +34,6 @@ public class JwtFilter extends OncePerRequestFilter {
                     .findFirst();
 
             if (accessTokenCookie.isPresent()) {
-                System.out.println("access token is present");
                 String token = accessTokenCookie.get().getValue();
 
                 if (!token.isEmpty()) {
@@ -45,9 +44,7 @@ public class JwtFilter extends OncePerRequestFilter {
                         UserRole userRole = UserRole.valueOf(role);
                         UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(email, null, userRole.getPrivileges()
                                 .stream()
-                                .map((privilage) -> {
-                                    return new SimpleGrantedAuthority(privilage.name());
-                                })
+                                .map(privilage ->new SimpleGrantedAuthority(privilage.name()))
                                 .toList());
                         authenticationToken.setDetails(new WebAuthenticationDetails(request));
                         SecurityContextHolder.getContext().setAuthentication(authenticationToken);

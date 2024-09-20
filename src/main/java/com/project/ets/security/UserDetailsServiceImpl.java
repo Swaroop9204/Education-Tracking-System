@@ -19,9 +19,6 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         return userRepository.findByEmail(username)
                 .map(CustomUserDatails::new)
-                .orElseThrow(()->{
-
-                    return new UsernameNotFoundException("user not found by given email");
-                });
+                .orElseThrow(()->new UsernameNotFoundException("user not found by given email"));
     }
 }

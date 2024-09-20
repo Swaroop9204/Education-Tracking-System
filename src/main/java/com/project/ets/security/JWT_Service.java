@@ -20,17 +20,17 @@ public class JWT_Service {
     private String secret;
 
     @Value("${my_app.jwt.access_expiry}")
-    private long access_expiry;
+    private long accessExpiry;
 
     @Value("${my_app.jwt.refresh_expiry}")
-    private long refresh_expiry;
+    private long refreshExpiry;
 
     public String generateAccessToken(String userId,String email,String role){
-        return createJwt(userId,email,role,access_expiry);
+        return createJwt(userId,email,role,accessExpiry);
     }
 
     public String generateRefreshToken(String userId,String email,String role){
-        return createJwt(userId,email,role,refresh_expiry);
+        return createJwt(userId,email,role,refreshExpiry);
     }
 
     private String createJwt(String userId,String email,String role,long expiry){
