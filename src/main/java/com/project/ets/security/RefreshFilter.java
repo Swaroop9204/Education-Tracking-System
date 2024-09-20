@@ -19,7 +19,7 @@ import java.util.Arrays;
 import java.util.Optional;
 @AllArgsConstructor
 public class RefreshFilter extends OncePerRequestFilter {
-    private JWT_Service jwtService;
+    private JwtService jwtService;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {

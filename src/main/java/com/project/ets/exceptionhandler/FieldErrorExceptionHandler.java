@@ -20,7 +20,7 @@ import com.project.ets.util.CustomFieldError;
 @RestControllerAdvice
 public class FieldErrorExceptionHandler extends ResponseEntityExceptionHandler{
 
-private AppResponseBuilder responseBuilder;
+private final AppResponseBuilder responseBuilder;
 	
 	
 	public FieldErrorExceptionHandler(AppResponseBuilder responseBuilder) {

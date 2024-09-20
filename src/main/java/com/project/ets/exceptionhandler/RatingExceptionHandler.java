@@ -14,7 +14,7 @@ import lombok.AllArgsConstructor;
 @RestControllerAdvice
 @AllArgsConstructor
 public class RatingExceptionHandler {
-	private AppResponseBuilder appResponseBuilder;
+	private final AppResponseBuilder appResponseBuilder;
 	
 	
 	@ExceptionHandler(RatingNotFoundByIdException.class)

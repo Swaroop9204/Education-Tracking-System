@@ -14,7 +14,7 @@ import java.util.Date;
 import java.util.Map;
 
 @Service
-public class JWT_Service {
+public class JwtService {
 
     @Value("${my_app.jwt.secret}" )
     private String secret;

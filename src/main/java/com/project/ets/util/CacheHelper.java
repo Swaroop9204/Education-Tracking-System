@@ -1,13 +1,9 @@
 package com.project.ets.util;
 
 import com.project.ets.entity.User;
-import com.project.ets.exception.InvalidOtpException;
-import com.project.ets.exception.RegistrationSessionExpiredexception;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Component;
-
-import java.io.Serializable;
 
 @Component
 public class CacheHelper  {

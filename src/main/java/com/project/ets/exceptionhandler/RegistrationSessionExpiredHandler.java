@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 @AllArgsConstructor
 @RestControllerAdvice
 public class RegistrationSessionExpiredHandler {
-    private AppResponseBuilder responseBuilder;
+    private final AppResponseBuilder responseBuilder;
 
     @ExceptionHandler(RegistrationSessionExpiredexception.class)
     public ResponseEntity<ErrorStructure<String>> handleRegistration(RegistrationSessionExpiredexception exception){

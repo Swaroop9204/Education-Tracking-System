@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 @RestControllerAdvice
 @AllArgsConstructor
 public class InvalidOtpExceptionHandler {
-    private AppResponseBuilder responseBuilder;
+    private final AppResponseBuilder responseBuilder;
 
     @ExceptionHandler(InvalidOtpException.class)
     public ResponseEntity<ErrorStructure<String>> handleInavlidOtpException(InvalidOtpException exception){

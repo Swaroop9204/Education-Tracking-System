@@ -16,7 +16,7 @@ import lombok.AllArgsConstructor;
 @AllArgsConstructor
 public class UserExceptionHandler {
 
-	private AppResponseBuilder builder;
+	private final AppResponseBuilder builder;
 
 	@ExceptionHandler(UserNotFoundByIdException.class)
 	public ResponseEntity<ErrorStructure<String>> handleUserNotFoundById(UserNotFoundByIdException exception){
