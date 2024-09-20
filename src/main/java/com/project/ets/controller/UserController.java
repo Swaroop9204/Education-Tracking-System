@@ -38,8 +38,8 @@ import lombok.AllArgsConstructor;
 @RestController
 @AllArgsConstructor
 public class UserController {
-	private UserService userService;
-	private AppResponseBuilder responseBuilder;
+	private final UserService userService;
+	private final AppResponseBuilder responseBuilder;
 
 	@Operation(description = "This end point is used to save the admin to the database",responses = {
 			@ApiResponse(responseCode = "201",description = "admin is created successfully"),
